@@ -1,8 +1,10 @@
 use std::fs;
+use substring::Substring;
 
 fn main() {
     //day_one_part_one();
-    day_one_part_two();
+    // day_one_part_two();
+    day_two_part_one();
 }
 
 #[allow(dead_code)]
@@ -30,6 +32,7 @@ fn day_one_part_one() {
     print!("{}",total);
 }
 
+#[allow(dead_code)]
 fn day_one_part_two() {
     let mut total = 0;
     let numbers = ["one","two","three","four","five","six","seven","eight","nine"];
@@ -76,4 +79,36 @@ fn day_one_part_two() {
         total += number;
     }
     print!("{}",total);
+}
+
+fn day_two_part_one() {
+    const MAX_RED: u32 = 12;
+    const MAX_GREEN: u32 = 13;
+    const MAX_BLUE: u32 = 14;
+
+    let mut allowed_games:Vec<u32> = Vec::new();
+    for line in  fs::read_to_string("day_two_part_one.txt").unwrap().lines() {
+        //get the id
+        let id:u32 = line.substring(5,line.find(":").unwrap()).parse::<u32>().unwrap();
+        let remaining = line.substring(line.find(":").unwrap()+2, line.len()).replace(";",",").replace(", ",",");
+       let mut allow = true;
+        for part in remaining.split(",") {
+            let number = part.substring(0,part.find(" ").unwrap()).parse::<u32>().unwrap();
+            let color = part.substring(part.find(" ").unwrap()+1,part.len());
+
+            if color == "red" && number > MAX_RED {
+               allow = false;
+            }
+            if color == "green" && number > MAX_GREEN {
+                allow = false;
+            }
+            if color == "blue" && number > MAX_BLUE {
+                allow = false;
+            }
+        }
+        if allow {
+            allowed_games.push(id);
+        }
+    }
+    print!("{}",allowed_games.iter().sum::<u32>());
 }
