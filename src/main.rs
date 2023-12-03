@@ -4,7 +4,8 @@ use substring::Substring;
 fn main() {
     //day_one_part_one();
     // day_one_part_two();
-    day_two_part_one();
+    // day_two_part_one();
+    day_two_part_two();
 }
 
 #[allow(dead_code)]
@@ -81,6 +82,7 @@ fn day_one_part_two() {
     print!("{}",total);
 }
 
+#[allow(dead_code)]
 fn day_two_part_one() {
     const MAX_RED: u32 = 12;
     const MAX_GREEN: u32 = 13;
@@ -111,4 +113,32 @@ fn day_two_part_one() {
         }
     }
     print!("{}",allowed_games.iter().sum::<u32>());
+}
+
+fn day_two_part_two() {
+    let mut sum_powers: u32 = 0;
+    for line in fs::read_to_string("day_two_part_two.txt").unwrap().lines() {
+        //get the id
+        // let id: u32 = line.substring(5, line.find(":").unwrap()).parse::<u32>().unwrap();
+        let remaining = line.substring(line.find(":").unwrap() + 2, line.len()).replace(";", ",").replace(", ", ",");
+        //going with high numbers so we don't have to test for 0
+        let mut min_red: u32 = 0;
+        let mut min_green: u32 = 0;
+        let mut min_blue: u32 = 0;
+        for part in remaining.split(",") {
+            let number = part.substring(0, part.find(" ").unwrap()).parse::<u32>().unwrap();
+            let color = part.substring(part.find(" ").unwrap() + 1, part.len());
+            if color == "red" && number > min_red {
+                min_red = number;
+            }
+            if color == "green" && number > min_green {
+                min_green = number;
+            }
+            if color == "blue" && number > min_blue {
+                min_blue = number;
+            }
+        }
+        sum_powers += min_red * min_green * min_blue;
+    }
+    print!("{}",sum_powers);
 }
